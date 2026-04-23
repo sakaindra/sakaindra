@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameVault — Marketplace Item Game Online</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #060b09;
+            --bg-main: #0a100d;
+            --bg-card: #111a15;
+            --bg-card-hover: #162019;
+            --bg-elevated: #1a2720;
+            --accent: #00e68a;
+            --accent-dim: #00cc7a;
+            --accent-glow: rgba(0, 230, 138, 0.15);
+            --accent-glow-strong: rgba(0, 230, 138, 0.3);
+            --gold: #f5a623;
+            --gold-dim: rgba(245, 166, 35, 0.15);
+            --red: #ff4757;
+            --red-dim: rgba(255, 71, 87, 0.15);
+            --text: #e8f0ec;
+            --text-secondary: #8a9e92;
+            --text-muted: #5a6e62;
+            --border: #1e2e25;
+            --border-light: #2a3d32;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .font-display { font-family: 'Exo 2', sans-serif; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+
+        /* Animated background */
+        .bg-mesh {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse 600px 400px at 15% 10%, rgba(0,230,138,0.04) 0%, transparent 70%),
+                radial-gradient(ellipse 500px 500px at 85% 80%, rgba(0,230,138,0.03) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 300px at 50% 50%, rgba(245,166,35,0.02) 0%, transparent 70%);
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 80px 80px;
+            opacity: 0.15;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 100%);
+        }
+
+        /* Floating particles */
+        .particle {
+            position: fixed;
+            width: 2px; height: 2px;
+            background: var(--accent);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0;
+            animation: floatParticle 8s infinite ease-in-out;
+        }
+
+        @keyframes floatParticle {
+            0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+            20% { opacity: 0.6; }
+            50% { opacity: 0.3; transform: translateY(-120px) scale(1); }
+            80% { opacity: 0.5; }
+        }
+
+        /* Card glow on hover */
+        .card-glow {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .card-glow::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, var(--accent) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        .card-glow:hover::before { opacity: 0.3; }
+        .card-glow:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 30px var(--accent-glow);
+        }
+
+        /* Badge pulse */
+        .badge-pulse {
+            animation: badgePulse 2s infinite;
+        }
+        @keyframes badgePulse {
+            0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow-strong); }
+            50% { box-shadow: 0 0 0 6px transparent; }
+        }
+
+        /* Shimmer effect */
+        .shimmer {
+            background: linear-gradient(90deg, transparent 0%, rgba(0,230,138,0.05) 50%, transparent 100%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Slide in from right */
+        .slide-in-right {
+            animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Slide in from bottom */
+        .slide-in-up {
+            animation: slideInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideInUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Fade scale */
+        .fade-scale {
+            animation: fadeScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeScale {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Toast */
+        .toast-enter {
+            animation: toastIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes toastIn {
+            from { transform: translateX(100%) scale(0.8); opacity: 0; }
+            to { transform: translateX(0) scale(1); opacity: 1; }
+        }
+        .toast-exit {
+            animation: toastOut 0.3s ease forwards;
+        }
+        @keyframes toastOut {
+            to { transform: translateX(120%); opacity: 0; }
+        }
+
+        /* Star rating */
+        .star-filled { color: var(--gold); }
+        .star-empty { color: var(--text-muted); }
+
+        /* Tab active indicator */
+        .tab-active {
+            color: var(--accent) !important;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        /* Game badge colors */
+        .game-ml { background: linear-gradient(135deg, #1a237e, #283593); }
+        .game-gi { background: linear-gradient(135deg, #4a148c, #6a1b9a); }
+        .game-pubg { background: linear-gradient(135deg, #b71c1c, #c62828); }
+        .game-ff { background: linear-gradient(135deg, #e65100, #ef6c00); }
+        .game-valo { background: linear-gradient(135deg, #0d47a1, #1565c0); }
+        .game-hsr { background: linear-gradient(135deg, #004d40, #00695c); }
+        .game-cod { background: linear-gradient(135deg, #212121, #424242); }
+        .game-al { background: linear-gradient(135deg, #880e4f, #ad1457); }
+
+        /* Custom range slider */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px; height: 16px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--accent-glow-strong);
+        }
+
+        /* Search input */
+        .search-input:focus {
+            box-shadow: 0 0 0 2px var(--accent-glow-strong);
+            border-color: var(--accent);
+        }
+
+        /* Quantity buttons */
+        .qty-btn {
+            transition: all 0.15s;
+        }
+        .qty-btn:hover {
+            background: var(--accent);
+            color: var(--bg-deep);
+        }
+        .qty-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* Smooth transitions for all interactive elements */
+        button, a, input, select {
+            transition: all 0.2s ease;
+        }
+
+        /* Overlay backdrop */
+        .backdrop {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Horizontal scroll no scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Hero glow line */
+        .glow-line {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.4;
+        }
+
+        /* Promo banner gradient */
+        .promo-gradient {
+            background: linear-gradient(135deg, #0a100d 0%, #111a15 40%, #162019 60%, #111a15 100%);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .particle { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background layers -->
+    <div class="bg-mesh"></div>
+    <div class="bg-grid"></div>
+    <div id="particles"></div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Header -->
+    <header class="sticky top-0 z-[100] border-b" style="background: rgba(10,16,13,0.85); backdrop-filter: blur(16px) saturate(180%); border-color: var(--border);">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16 gap-4">
+                <!-- Logo -->
+                <a href="#" class="flex items-center gap-2 shrink-0" onclick="resetAll()">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--accent), #00b36b);">
+                        <i class="fas fa-gamepad text-sm" style="color: var(--bg-deep);"></i>
+                    </div>
+                    <span class="font-display font-800 text-xl tracking-tight hidden sm:block" style="color: var(--text);">Game<span style="color: var(--accent);">Vault</span></span>
+                </a>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-xl relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-sm" style="color: var(--text-muted);"></i>
+                    <input type="text" id="searchInput" placeholder="Cari item, game, atau seller..."
+                        class="search-input w-full h-10 pl-10 pr-4 rounded-lg text-sm outline-none border"
+                        style="background: var(--bg-card); border-color: var(--border); color: var(--text);"
+                        oninput="handleSearch(this.value)">
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-1 sm:gap-2 shrink-0">
+                    <button onclick="toggleWishlist()" class="relative w-10 h-10 rounded-lg flex items-center justify-center hover:bg-[var(--bg-card)]" title="Wishlist">
+                        <i class="far fa-heart" style="color: var(--text-secondary);"></i>
+                        <span id="wishlistCount" class="absolute -top-1 -right-1 w-5 h-5 rounded-full text-[10px] font-700 flex items-center justify-center hidden" style="background: var(--red); color: white;">0</span>
+                    </button>
+                    <button onclick="toggleCart()" class="relative w-10 h-10 rounded-lg flex items-center justify-center hover:bg-[var(--bg-card)]" title="Keranjang">
+                        <i class="fas fa-shopping-cart text-sm" style="color: var(--text-secondary);"></i>
+                        <span id="cartCount" class="absolute -top-1 -right-1 w-5 h-5 rounded-full text-[10px] font-700 flex items-center justify-center hidden badge-pulse" style="background: var(--accent); color: var(--bg-deep);">0</span>
+                    </button>
+                    <button onclick="toggleUserMenu()" class="w-10 h-10 rounded-lg flex items-center justify-center hover:bg-[var(--bg-card)] sm:hidden" title="Menu">
+                        <i class="fas fa-bars text-sm" style="color: var(--text-secondary);"></i>
+                    </button>
+                    <div class="hidden sm:flex items-center gap-2 pl-2 border-l" style="border-color: var(--border);">
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center font-display font-700 text-sm" style="background: linear-gradient(135deg, var(--accent), #00b36b); color: var(--bg-deep);">U</div>
+                        <div class="hidden lg:block">
+                            <p class="text-xs font-600" style="color: var(--text);">UserDemo</p>
+                            <p class="text-[10px]" style="color: var(--text-muted);">Saldo: Rp 5.000.000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10">
+        <!-- Hero Section -->
+        <section class="promo-gradient border-b" style="border-color: var(--border);">
+            <div class="max-w-7xl mx-auto px-4 py-8 md:py-12">
+                <div class="flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                    <div class="flex-1 text-center md:text-left">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-600 mb-4" style="background: var(--gold-dim); color: var(--gold);">
+                            <i class="fas fa-fire"></i> Flash Sale Hari Ini
+                        </div>
+                        <h1 class="font-display font-900 text-3xl md:text-5xl leading-tight mb-3" style="color: var(--text);">
+                            Top Up & Item Game<br>
+                            <span style="color: var(--accent);">Termurah</span> se-Indonesia
+                        </h1>
+                        <p class="text-sm md:text-base mb-6 max-w-lg" style="color: var(--text-secondary);">
+                            Jual beli item game, top up diamond, akun, skin, dan layanan joki dengan harga terbaik. Proses instan, aman, dan terpercaya.
+                        </p>
+                        <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                            <button onclick="scrollToListing()" class="h-11 px-6 rounded-lg font-600 text-sm flex items-center gap-2" style="background: var(--accent); color: var(--bg-deep);">
+                                <i class="fas fa-bolt"></i> Mulai Belanja
+                            </button>
+                            <button onclick="showToast('Fitur jual item segera hadir!', 'info')" class="h-11 px-6 rounded-lg font-600 text-sm flex items-center gap-2 border" style="border-color: var(--border-light); color: var(--text-secondary); background: transparent;">
+                                <i class="fas fa-store"></i> Jual Item
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Stats -->
+                    <div class="grid grid-cols-2 gap-3 md:gap-4 w-full md:w-auto">
+                        <div class="p-4 rounded-xl text-center min-w-[130px]" style="background: var(--bg-card); border: 1px solid var(--border);">
+                            <p class="font-display font-900 text-2xl" style="color: var(--accent);">12K+</p>
+                            <p class="text-xs mt-1" style="color: var(--text-muted);">Item Tersedia</p>
+                        </div>
+                        <div class="p-4 rounded-xl text-center min-w-[130px]" style="background: var(--bg-card); border: 1px solid var(--border);">
+                            <p class="font-display font-900 text-2xl" style="color: var(--gold);">5.2K</p>
+                            <p class="text-xs mt-1" style="color: var(--text-muted);">Seller Aktif</p>
+                        </div>
+                        <div class="p-4 rounded-xl text-center min-w-[130px]" style="background: var(--bg-card); border: 1px solid var(--border);">
+                            <p class="font-display font-900 text-2xl" style="color: var(--text);">98%</p>
+                            <p class="text-xs mt-1" style="color: var(--text-muted);">Transaksi Sukses</p>
+                        </div>
+                        <div class="p-4 rounded-xl text-center min-w-[130px]" style="background: var(--bg-card); border: 1px solid var(--border);">
+                            <p class="font-display font-900 text-2xl" style="color: var(--accent);">3 detik</p>
+                            <p class="text-xs mt-1" style="color: var(--text-muted);">Rata-rata Proses</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="glow-line"></div>
+        </section>
+
+        <!-- Game Categories -->
+        <section class="border-b" style="border-color: var(--border); background: var(--bg-main);">
+            <div class="max-w-7xl mx-auto px-4 py-5">
+                <div class="flex items-center gap-3 overflow-x-auto no-scrollbar pb-1" id="gameTabs">
+                    <button onclick="filterByGame('all')" class="game-tab tab-active shrink-0 px-4 py-2 rounded-lg text-sm font-600 flex items-center gap-2 transition-all" data-game="all">
+                        <i class="fas fa-th-large"></i> Semua Game
+                    </button>
+                    <button onclick="filterByGame('ml')" class="game-tab shrink-0 px-4 py-2 rounded-lg text-sm font-600 flex items-center gap-2 transition-all" data-game="ml" style="color: var(--text-secondary);">
+                        <i class="fas fa-crown"></i> Mobile Legends
+                    </button>
+                    <button onclick="filterByGame('gi')" class="game-tab shrink-0 px-4 py-2 rounded-lg text-sm font-600 flex items-center gap-2 transition-all" data-game="gi" style="color: var(--text-secondary);">
+                        <i class="fas fa-wind"></i> Genshin Impact
+                    </button>
+                    <button onclick="filterByGame('pubg')" class="game-tab shrink-0 px-4 py-2 rounded-lg text-sm font-600 flex items-center gap-2 transition-all" data-game="pubg" style="color: var(--text-secondary);">
+                        <i class="fas fa-crosshairs"></i> PUBG Mobile
+                    </button>
+                    <button onclick="filterByGame('ff')" class="game-tab shrink-0 px-4 py-2 rounded-lg text-sm font-600 flex items-center gap-2 transition-all" data-game="ff" style="color: var(--text-secondary);">
+                        <i class="fas fa-fire-alt"></i> Free Fire
+                    </button>
+                    <button onclick="filterByGame('valo')" class="game-tab shrink-0 px-4 py-2 rounded-lg text-sm font-600 flex items-center gap-2 transition-all" data-game="valo" style="color: var(--text-secondary);">
+                        <i class="fas fa-bullseye"></i> Valorant
+                    </button>
+                    <button onclick="filterByGame('hsr')" class="game-tab shrink-0 px-4 py-2 rounded-lg text-sm font-600 flex items-center gap-2 transition-all" data-game="hsr" style="color: var(--text-secondary);">
+                        <i class="fas fa-train"></i> Honkai Star Rail
+                    </button>
+                    <button onclick="filterByGame('cod')" class="game-tab shrink-0 px-4 py-2 rounded-lg text-sm font-600 flex items-center gap-2 transition-all" data-game="cod" style="color: var(--text-secondary);">
+                        <i class="fas fa-skull-crossbones"></i> COD Mobile
+                    </button>
+                    <button onclick="filterByGame('al')" class="game-tab shrink-0 px-4 py-2 rounded-lg text-sm font-600 flex items-center gap-2 transition-all" data-game="al" style="color: var(--text-secondary);">
+                        <i class="fas fa-dragon"></i> Arena of Valor
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Listing Section -->
+        <section id="listingSection" class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Sidebar Filter (Desktop) -->
+                <aside class="hidden lg:block w-64 shrink-0">
+                    <div class="sticky top-24 space-y-5">
+                        <!-- Category Filter -->
+                        <div class="p-4 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border);">
+                            <h3 class="font-display font-700 text-sm mb-3" style="color: var(--text);">Kategori Item</h3>
+                            <div class="space-y-2" id="categoryFilters">
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="category" value="all" checked onchange="filterByCategory('all')" class="accent-[#00e68a]"> Semua
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="category" value="topup" onchange="filterByCategory('topup')" class="accent-[#00e68a]"> Top Up
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="category" value="skin" onchange="filterByCategory('skin')" class="accent-[#00e68a]"> Skin
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="category" value="akun" onchange="filterByCategory('akun')" class="accent-[#00e68a]"> Akun
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="category" value="joki" onchange="filterByCategory('joki')" class="accent-[#00e68a]"> Joki
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="category" value="bundle" onchange="filterByCategory('bundle')" class="accent-[#00e68a]"> Bundle
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Price Filter -->
+                        <div class="p-4 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border);">
+                            <h3 class="font-display font-700 text-sm mb-3" style="color: var(--text);">Rentang Harga</h3>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="text-xs" style="color: var(--text-muted);">Minimum: <span id="minPriceLabel">Rp 0</span></label>
+                                    <input type="range" min="0" max="500000" step="10000" value="0" id="minPrice" oninput="updatePriceFilter()">
+                                </div>
+                                <div>
+                                    <label class="text-xs" style="color: var(--text-muted);">Maksimum: <span id="maxPriceLabel">Rp 500.000</span></label>
+                                    <input type="range" min="0" max="500000" step="10000" value="500000" id="maxPrice" oninput="updatePriceFilter()">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seller Filter -->
+                        <div class="p-4 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border);">
+                            <h3 class="font-display font-700 text-sm mb-3" style="color: var(--text);">Rating Seller</h3>
+                            <div class="space-y-2" id="ratingFilters">
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="rating" value="0" checked onchange="filterByRating(0)" class="accent-[#00e68a]"> Semua Rating
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="rating" value="4.5" onchange="filterByRating(4.5)" class="accent-[#00e68a]"> <i class="fas fa-star text-xs" style="color: var(--gold);"></i> 4.5+
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="rating" value="4" onchange="filterByRating(4)" class="accent-[#00e68a]"> <i class="fas fa-star text-xs" style="color: var(--gold);"></i> 4.0+
+                                </label>
+                                <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                                    <input type="radio" name="rating" value="3.5" onchange="filterByRating(3.5)" class="accent-[#00e68a]"> <i class="fas fa-star text-xs" style="color: var(--gold);"></i> 3.5+
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Fast Process -->
+                        <div class="p-4 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border);">
+                            <label class="flex items-center gap-3 cursor-pointer">
+                                <input type="checkbox" id="fastProcess" onchange="applyFilters()" class="accent-[#00e68a] w-4 h-4">
+                                <div>
+                                    <span class="text-sm font-600" style="color: var(--text);">Proses Instan</span>
+                                    <p class="text-xs" style="color: var(--text-muted);">Selesai dalam 5 menit</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Product Grid Area -->
+                <div class="flex-1 min-w-0">
+                    <!-- Toolbar -->
+                    <div class="flex items-center justify-between gap-3 mb-5 flex-wrap">
+                        <div class="flex items-center gap-2">
+                            <button onclick="toggleMobileFilter()" class="lg:hidden h-9 px-3 rounded-lg text-sm font-500 flex items-center gap-2 border" style="border-color: var(--border); color: var(--text-secondary); background: var(--bg-card);">
+                                <i class="fas fa-sliders-h"></i> Filter
+                            </button>
+                            <p class="text-sm" style="color: var(--text-muted);">Menampilkan <span id="resultCount" class="font-600" style="color: var(--text);">0</span> item</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <select id="sortSelect" onchange="applyFilters()" class="h-9 px-3 rounded-lg text-sm outline-none border cursor-pointer" style="background: var(--bg-card); border-color: var(--border); color: var(--text-secondary);">
+                                <option value="popular">Paling Populer</option>
+                                <option value="newest">Terbaru</option>
+                                <option value="price-low">Harga Terendah</option>
+                                <option value="price-high">Harga Tertinggi</option>
+                                <option value="rating">Rating Tertinggi</option>
+                                <option value="sold">Terbanyak Terjual</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Active Filters -->
+                    <div id="activeFilters" class="flex flex-wrap gap-2 mb-4 hidden"></div>
+
+                    <!-- Product Grid -->
+                    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <!-- Products will be rendered here -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden text-center py-16">
+                        <i class="fas fa-box-open text-5xl mb-4" style="color: var(--text-muted);"></i>
+                        <h3 class="font-display font-700 text-lg mb-2" style="color: var(--text-secondary);">Item Tidak Ditemukan</h3>
+                        <p class="text-sm mb-4" style="color: var(--text-muted);">Coba ubah filter atau kata kunci pencarian</p>
+                        <button onclick="resetAll()" class="h-9 px-5 rounded-lg text-sm font-600" style="background: var(--accent); color: var(--bg-deep);">Reset Filter</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div id="cartOverlay" class="fixed inset-0 z-[200] hidden">
+        <div class="backdrop absolute inset-0" onclick="toggleCart()"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-full max-w-md slide-in-right flex flex-col" style="background: var(--bg-main); border-left: 1px solid var(--border);">
+            <!-- Cart Header -->
+            <div class="flex items-center justify-between px-5 py-4 border-b" style="border-color: var(--border);">
+                <div class="flex items-center gap-3">
+                    <h2 class="font-display font-700 text-lg" style="color: var(--text);">Keranjang Belanja</h2>
+                    <span id="cartItemCount" class="px-2 py-0.5 rounded-full text-xs font-600" style="background: var(--accent-glow); color: var(--accent);">0</span>
+                </div>
+                <button onclick="toggleCart()" class="w-9 h-9 rounded-lg flex items-center justify-center hover:bg-[var(--bg-card)]">
+                    <i class="fas fa-times" style="color: var(--text-secondary);"></i>
+                </button>
+            </div>
+            <!-- Cart Items -->
+            <div id="cartItems" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+                <!-- Cart items rendered here -->
+            </div>
+            <!-- Cart Empty -->
+            <div id="cartEmpty" class="flex-1 flex flex-col items-center justify-center px-5 hidden">
+                <i class="fas fa-shopping-cart text-4xl mb-3" style="color: var(--text-muted);"></i>
+                <p class="text-sm font-500" style="color: var(--text-secondary);">Keranjang masih kosong</p>
+                <p class="text-xs mt-1" style="color: var(--text-muted);">Yuk mulai belanja item game favoritmu!</p>
+            </div>
+            <!-- Cart Footer -->
+            <div id="cartFooter" class="px-5 py-4 border-t space-y-3" style="border-color: var(--border); background: var(--bg-card);">
+                <div class="flex items-center justify-between text-sm">
+                    <span style="color: var(--text-secondary);">Subtotal</span>
+                    <span id="cartSubtotal" class="font-600" style="color: var(--text);">Rp 0</span>
+                </div>
+                <div class="flex items-center justify-between text-sm">
+                    <span style="color: var(--text-secondary);">Biaya Layanan (2%)</span>
+                    <span id="cartFee" class="font-500" style="color: var(--text-muted);">Rp 0</span>
+                </div>
+                <div class="glow-line"></div>
+                <div class="flex items-center justify-between">
+                    <span class="font-600" style="color: var(--text);">Total</span>
+                    <span id="cartTotal" class="font-display font-800 text-lg" style="color: var(--accent);">Rp 0</span>
+                </div>
+                <button onclick="checkout()" id="checkoutBtn" class="w-full h-12 rounded-xl font-700 text-sm flex items-center justify-center gap-2" style="background: var(--accent); color: var(--bg-deep);">
+                    <i class="fas fa-lock"></i> Checkout Sekarang
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 z-[200] hidden">
+        <div class="backdrop absolute inset-0" onclick="closeDetail()"></div>
+        <div class="absolute inset-4 md:inset-8 lg:inset-16 flex items-center justify-center">
+            <div class="w-full max-w-3xl max-h-full overflow-y-auto rounded-2xl fade-scale" style="background: var(--bg-main); border: 1px solid var(--border);" id="detailContent">
+                <!-- Detail content rendered here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Filter Sheet -->
+    <div id="mobileFilterOverlay" class="fixed inset-0 z-[200] hidden lg:hidden">
+        <div class="backdrop absolute inset-0" onclick="toggleMobileFilter()"></div>
+        <div class="absolute bottom-0 left-0 right-0 slide-in-up rounded-t-2xl max-h-[80vh] overflow-y-auto" style="background: var(--bg-main); border-top: 1px solid var(--border);">
+            <div class="flex items-center justify-between px-5 py-4 border-b sticky top-0" style="border-color: var(--border); background: var(--bg-main);">
+                <h3 class="font-display font-700">Filter</h3>
+                <button onclick="toggleMobileFilter()" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--bg-card)]">
+                    <i class="fas fa-times" style="color: var(--text-secondary);"></i>
+                </button>
+            </div>
+            <div class="px-5 py-4 space-y-5" id="mobileFilterContent">
+                <!-- Filled by JS -->
+            </div>
+            <div class="px-5 py-4 border-t flex gap-3 sticky bottom-0" style="border-color: var(--border); background: var(--bg-main);">
+                <button onclick="resetAll(); toggleMobileFilter();" class="flex-1 h-10 rounded-lg text-sm font-600 border" style="border-color: var(--border); color: var(--text-secondary);">Reset</button>
+                <button onclick="applyFilters(); toggleMobileFilter();" class="flex-1 h-10 rounded-lg text-sm font-600" style="background: var(--accent); color: var(--bg-deep);">Terapkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal" class="fixed inset-0 z-[300] hidden">
+        <div class="backdrop absolute inset-0" onclick="closeCheckout()"></div>
+        <div class="absolute inset-4 md:inset-16 lg:inset-24 flex items-center justify-center">
+            <div class="w-full max-w-lg rounded-2xl fade-scale overflow-hidden" style="background: var(--bg-main); border: 1px solid var(--border);">
+                <div id="checkoutContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t mt-12" style="border-color: var(--border); background: var(--bg-main);">
+        <div class="max-w-7xl mx-auto px-4 py-10">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div class="col-span-2 md:col-span-1">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: linear-gradient(135deg, var(--accent), #00b36b);">
+                            <i class="fas fa-gamepad text-xs" style="color: var(--bg-deep);"></i>
+                        </div>
+                        <span class="font-display font-800 text-lg">Game<span style="color: var(--accent);">Vault</span></span>
+                    </div>
+                    <p class="text-xs leading-relaxed" style="color: var(--text-muted);">Marketplace item game online terpercaya di Indonesia. Proses cepat, harga bersaing, transaksi aman.</p>
+                </div>
+                <div>
+                    <h4 class="font-display font-700 text-sm mb-3" style="color: var(--text);">Layanan</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-xs hover:underline" style="color: var(--text-muted);">Top Up Game</a></li>
+                        <li><a href="#" class="text-xs hover:underline" style="color: var(--text-muted);">Jual Item</a></li>
+                        <li><a href="#" class="text-xs hover:underline" style="color: var(--text-muted);">Joki Rank</a></li>
+                        <li><a href="#" class="text-xs hover:underline" style="color: var(--text-muted);">Beli Akun</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-display font-700 text-sm mb-3" style="color: var(--text);">Informasi</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-xs hover:underline" style="color: var(--text-muted);">Cara Beli</a></li>
+                        <li><a href="#" class="text-xs hover:underline" style="color: var(--text-muted);">Cara Jual</a></li>
+                        <li><a href="#" class="text-xs hover:underline" style="color: var(--text-muted);">Kebijakan Privasi</a></li>
+                        <li><a href="#" class="text-xs hover:underline" style="color: var(--text-muted);">Syarat & Ketentuan</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-display font-700 text-sm mb-3" style="color: var(--text);">Hubungi Kami</h4>
+                    <div class="space-y-2">
+                        <a href="#" class="flex items-center gap-2 text-xs" style="color: var(--text-muted);"><i class="fab fa-discord"></i> GameVault</a>
+                        <a href="#" class="flex items-center gap-2 text-xs" style="color: var(--text-muted);"><i class="fab fa-telegram"></i> @gamevault_id</a>
+                        <a href="#" class="flex items-center gap-2 text-xs" style="color: var(--text-muted);"><i class="fas fa-envelope"></i> cs@gamevault.id</a>
+                    </div>
+                </div>
+            </div>
+            <div class="glow-line mb-5"></div>
+            <div class="flex flex-col md:flex-row items-center justify-between gap-2">
+                <p class="text-xs" style="color: var(--text-muted);">2025 GameVault. Semua hak cipta dilindungi.</p>
+                <div class="flex items-center gap-4">
+                    <span class="text-xs flex items-center gap-1" style="color: var(--text-muted);"><i class="fas fa-shield-alt" style="color: var(--accent);"></i> SSL Secured</span>
+                    <span class="text-xs flex items-center gap-1" style="color: var(--text-muted);"><i class="fas fa-lock" style="color: var(--accent);"></i> Escrow System</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    // ============================================================
+    // DATA: Koleksi item game
+    // ============================================================
+    const gameNames = {
+        ml: 'Mobile Legends', gi: 'Genshin Impact', pubg: 'PUBG Mobile',
+        ff: 'Free Fire', valo: 'Valorant', hsr: 'Honkai Star Rail',
+        cod: 'COD Mobile', al: 'Arena of Valor'
+    };
+
+    const categoryNames = {
+        topup: 'Top Up', skin: 'Skin', akun: 'Akun', joki: 'Joki', bundle: 'Bundle'
+    };
+
+    const items = [
+        { id: 1, game: 'ml', category: 'topup', name: 'Diamond 86 Mobile Legends', price: 19000, originalPrice: 22000, img: 'https://picsum.photos/seed/ml-d86/400/300', seller: 'MLstorePro', sellerRating: 4.9, sold: 12450, fast: true, desc: 'Top up diamond 86 Mobile Legends. Proses otomatis via ID & Server. Masuk dalam 1-3 menit.', stock: 999 },
+        { id: 2, game: 'ml', category: 'topup', name: 'Diamond 172 Mobile Legends', price: 36000, originalPrice: 44000, img: 'https://picsum.photos/seed/ml-d172/400/300', seller: 'TopUpKu', sellerRating: 4.8, sold: 8920, fast: true, desc: 'Top up diamond 172 Mobile Legends. Bonus skin event jika tersedia.', stock: 999 },
+        { id: 3, game: 'ml', category: 'topup', name: 'Diamond 257 Mobile Legends', price: 53000, originalPrice: 66000, img: 'https://picsum.photos/seed/ml-d257/400/300', seller: 'GameMart', sellerRating: 4.7, sold: 6340, fast: true, desc: 'Top up diamond 257 Mobile Legends. Termurah se-Indonesia!', stock: 500 },
+        { id: 4, game: 'ml', category: 'skin', name: 'Skin Epic Alucard - Lightborn Striker', price: 45000, originalPrice: 59900, img: 'https://picsum.photos/seed/ml-skin1/400/300', seller: 'SkinShopML', sellerRating: 4.6, sold: 3120, fast: false, desc: 'Skin Epic Alucard Lightborn Striker. Dikirim via gift. Wajib sertakan ID.', stock: 45 },
+        { id: 5, game: 'ml', category: 'skin', name: 'Skin Legend Fanny - SKY PIERCER', price: 120000, originalPrice: 149000, img: 'https://picsum.photos/seed/ml-skin2/400/300', seller: 'MLstorePro', sellerRating: 4.9, sold: 1890, fast: false, desc: 'Skin Legend Fanny Sky Piercer. Limited edition. Proses manual 15-30 menit.', stock: 12 },
+        { id: 6, game: 'ml', category: 'joki', name: 'Joki Mythic Glory 1-5 Star', price: 85000, originalPrice: 120000, img: 'https://picsum.photos/seed/ml-joki1/400/300', seller: 'JokiMasterID', sellerRating: 4.8, sold: 4560, fast: false, desc: 'Joki rank Mythic Glory 1-5 star. menggunakan akun sendiri. Estimasi 1-3 hari. Win rate 95%.', stock: 20 },
+        { id: 7, game: 'ml', category: 'akun', name: 'Akun ML Full Skin 150+ Hero', price: 3500000, originalPrice: 5000000, img: 'https://picsum.photos/seed/ml-akun1/400/300', seller: 'AccStore99', sellerRating: 4.5, sold: 89, fast: false, desc: 'Akun Mobile Legends sudah unlock 150+ skin, rank Mythic, 500+ hero. Data lengkap.', stock: 1 },
+        { id: 8, game: 'gi', category: 'topup', name: 'Genesis Crystal 60 Genshin Impact', price: 16000, originalPrice: 19000, img: 'https://picsum.photos/seed/gi-gc60/400/300', seller: 'GenshinShop', sellerRating: 4.9, sold: 15200, fast: true, desc: 'Top up Genesis Crystal 60. Proses otomatis via UID. Masuk 1-5 menit.', stock: 999 },
+        { id: 9, game: 'gi', category: 'topup', name: 'Genesis Crystal 330 Genshin Impact', price: 79000, originalPrice: 95000, img: 'https://picsum.photos/seed/gi-gc330/400/300', seller: 'TopUpKu', sellerRating: 4.8, sold: 9870, fast: true, desc: 'Top up Genesis Crystal 330. Bonus Primogem sesuai rate resmi.', stock: 999 },
+        { id: 10, game: 'gi', category: 'topup', name: 'Blessing of Welkin Moon (30 Hari)', price: 75000, originalPrice: 79000, img: 'https://picsum.photos/seed/gi-welkin/400/300', seller: 'GenshinShop', sellerRating: 4.9, sold: 11340, fast: true, desc: 'Blessing of the Welkin Moon 30 hari. 300 Primogems/hari selama 30 hari.', stock: 999 },
+        { id: 11, game: 'gi', category: 'akun', name: 'Akun GI AR60 Full 5* Char 12+', price: 4500000, originalPrice: 6000000, img: 'https://picsum.photos/seed/gi-akun1/400/300', seller: 'AccStore99', sellerRating: 4.5, sold: 34, fast: false, desc: 'Akun Genshin Impact AR60, punya 12+ karakter 5* termasuk Furina, Neuvillette, Raiden. Data lengkap.', stock: 1 },
+        { id: 12, game: 'pubg', category: 'topup', name: 'UC 60 PUBG Mobile', price: 15000, originalPrice: 19000, img: 'https://picsum.photos/seed/pubg-uc60/400/300', seller: 'PUBGStore', sellerRating: 4.8, sold: 13500, fast: true, desc: 'Top up UC 60 PUBG Mobile. Proses otomatis. Masuk dalam 1-5 menit.', stock: 999 },
+        { id: 13, game: 'pubg', category: 'topup', name: 'UC 325 PUBG Mobile', price: 79000, originalPrice: 95000, img: 'https://picsum.photos/seed/pubg-uc325/400/300', seller: 'GameMart', sellerRating: 4.7, sold: 7890, fast: true, desc: 'Top up UC 325 PUBG Mobile. Termurah dan tercepat.', stock: 999 },
+        { id: 14, game: 'pubg', category: 'skin', name: 'Skin AKM - Mythic Glory', price: 250000, originalPrice: 350000, img: 'https://picsum.photos/seed/pubg-skin1/400/300', seller: 'PUBGStore', sellerRating: 4.8, sold: 567, fast: false, desc: 'Skin AKM Mythic Glory edition. Upgrade via akun. Proses 30-60 menit.', stock: 8 },
+        { id: 15, game: 'pubg', category: 'joki', name: 'Joki Rank Conqueror (Sesi)', price: 150000, originalPrice: 200000, img: 'https://picsum.photos/seed/pubg-joki1/400/300', seller: 'JokiMasterID', sellerRating: 4.8, sold: 2340, fast: false, desc: 'Joki push rank Conqueror 1 sesi. Menggunakan akun sendiri. KD ratio terjaga.', stock: 15 },
+        { id: 16, game: 'ff', category: 'topup', name: 'Diamond 100 Free Fire', price: 14000, originalPrice: 17000, img: 'https://picsum.photos/seed/ff-d100/400/300', seller: 'FFStore', sellerRating: 4.7, sold: 18200, fast: true, desc: 'Top up Diamond 100 Free Fire. Proses otomatis via ID. 1-3 menit.', stock: 999 },
+        { id: 17, game: 'ff', category: 'topup', name: 'Diamond 510 Free Fire', price: 67000, originalPrice: 82000, img: 'https://picsum.photos/seed/ff-d510/400/300', seller: 'TopUpKu', sellerRating: 4.8, sold: 9870, fast: true, desc: 'Top up Diamond 510 Free Fire. Bonus event jika ada.', stock: 999 },
+        { id: 18, game: 'ff', category: 'bundle', name: 'Bundle Incubator DJ Alok Full', price: 350000, originalPrice: 500000, img: 'https://picsum.photos/seed/ff-bundle1/400/300', seller: 'FFStore', sellerRating: 4.7, sold: 432, fast: false, desc: 'Bundle lengkap dari Incubator DJ Alok. Termasuk semua item. Proses via akun.', stock: 5 },
+        { id: 19, game: 'ff', category: 'akun', name: 'Akun FF Level 75 Full Elite Pass', price: 850000, originalPrice: 1200000, img: 'https://picsum.photos/seed/ff-akun1/400/300', seller: 'AccStore99', sellerRating: 4.5, sold: 156, fast: false, desc: 'Akun Free Fire level 75, semua Elite Pass dari season 1-30, banyak bundle langka.', stock: 1 },
+        { id: 20, game: 'valo', category: 'topup', name: 'Valorant Points 125', price: 15000, originalPrice: 19000, img: 'https://picsum.photos/seed/valo-vp125/400/300', seller: 'ValoShop', sellerRating: 4.9, sold: 10500, fast: true, desc: 'Top up Valorant Points 125. Proses otomatis via Riot ID. 1-5 menit.', stock: 999 },
+        { id: 21, game: 'valo', category: 'topup', name: 'Valorant Points 525', price: 59000, originalPrice: 75000, img: 'https://picsum.photos/seed/valo-vp525/400/300', seller: 'ValoShop', sellerRating: 4.9, sold: 7800, fast: true, desc: 'Top up Valorant Points 525. Bonus Radianite jika tersedia.', stock: 999 },
+        { id: 22, game: 'valo', category: 'skin', name: 'Skin Bundle Kuronami (Full Set)', price: 750000, originalPrice: 900000, img: 'https://picsum.photos/seed/valo-skin1/400/300', seller: 'ValoShop', sellerRating: 4.9, sold: 234, fast: false, desc: 'Bundle skin Kuronami lengkap untuk Vandal, Phantom, dan melee. Proses via akun login.', stock: 3 },
+        { id: 23, game: 'hsr', category: 'topup', name: 'Oneiric Shard 60 Honkai Star Rail', price: 16000, originalPrice: 19000, img: 'https://picsum.photos/seed/hsr-os60/400/300', seller: 'HSRShop', sellerRating: 4.8, sold: 8900, fast: true, desc: 'Top up Oneiric Shard 60 Honkai Star Rail. Proses otomatis via UID.', stock: 999 },
+        { id: 24, game: 'hsr', category: 'topup', name: 'Express Supply Pass (30 Hari)', price: 65000, originalPrice: 69000, img: 'https://picsum.photos/seed/hsr-pass/400/300', seller: 'HSRShop', sellerRating: 4.8, sold: 6700, fast: true, desc: 'Express Supply Pass 30 hari. 300 Oneiric Shard per hari.', stock: 999 },
+        { id: 25, game: 'hsr', category: 'akun', name: 'Akun HSR TL70 Full E6 5*', price: 5200000, originalPrice: 7000000, img: 'https://picsum.photos/seed/hsr-akun1/400/300', seller: 'AccStore99', sellerRating: 4.5, sold: 18, fast: false, desc: 'Akun HSR TL70, 4 karakter E6S5 (Kafka, Blade, Firefly, Rappa). Relic optimal.', stock: 1 },
+        { id: 26, game: 'cod', category: 'topup', name: 'CP 80 COD Mobile', price: 15000, originalPrice: 18000, img: 'https://picsum.photos/seed/cod-cp80/400/300', seller: 'CODStore', sellerRating: 4.7, sold: 9400, fast: true, desc: 'Top up CP 80 Call of Duty Mobile. Proses otomatis via Activision ID.', stock: 999 },
+        { id: 27, game: 'cod', category: 'skin', name: 'Skin M4A1 - Mythic Dark Matter', price: 450000, originalPrice: 600000, img: 'https://picsum.photos/seed/cod-skin1/400/300', seller: 'CODStore', sellerRating: 4.7, sold: 345, fast: false, desc: 'Skin Mythic M4A1 Dark Matter. Proses via akun. Wajib ada camo sebelumnya.', stock: 6 },
+        { id: 28, game: 'al', category: 'topup', name: 'Voucher 90 Vouchers AoV', price: 15000, originalPrice: 18000, img: 'https://picsum.photos/seed/al-v90/400/300', seller: 'AoVShop', sellerRating: 4.6, sold: 5600, fast: true, desc: 'Top up Voucher 90 Arena of Valor. Proses otomatis via ID.', stock: 999 },
+        { id: 29, game: 'ml', category: 'bundle', name: 'Bundle Skin Epik 5 Hero Pilihan', price: 180000, originalPrice: 300000, img: 'https://picsum.photos/seed/ml-bundle1/400/300', seller: 'SkinShopML', sellerRating: 4.6, sold: 789, fast: false, desc: 'Bundle 5 skin epik hero pilihan. Bisa pilih sendiri hero-nya. Kirim via gift.', stock: 30 },
+        { id: 30, game: 'gi', category: 'joki', name: 'Joki Spiral Abyss Full Star 36', price: 120000, originalPrice: 180000, img: 'https://picsum.photos/seed/gi-joki1/400/300', seller: 'JokiMasterID', sellerRating: 4.8, sold: 1890, fast: false, desc: 'Joki Spiral Abyss 36 star. Menggunakan akun sendiri. Butuh setidaknya 8 karakter built.', stock: 25 },
+        { id: 31, game: 'pubg', category: 'bundle', name: 'Bundle Royale Pass Premium Full', price: 280000, originalPrice: 400000, img: 'https://picsum.photos/seed/pubg-bundle1/400/300', seller: 'PUBGStore', sellerRating: 4.8, sold: 678, fast: false, desc: 'Bundle semua hadiah Royale Pass Premium season ini. Termasuk skin senjata & outfit.', stock: 10 },
+        { id: 32, game: 'valo', category: 'joki', name: 'Joki Rank Immortal → Radiant', price: 500000, originalPrice: 750000, img: 'https://picsum.photos/seed/valo-joki1/400/300', seller: 'JokiMasterID', sellerRating: 4.8, sold: 567, fast: false, desc: 'Joki rank dari Immortal ke Radiant. Menggunakan akun sendiri. Estimasi 3-7 hari.', stock: 5 },
+        { id: 33, game: 'ff', category: 'joki', name: 'Joki Push Rank Heroic → Grandmaster', price: 100000, originalPrice: 150000, img: 'https://picsum.photos/seed/ff-joki1/400/300', seller: 'JokiMasterID', sellerRating: 4.8, sold: 3450, fast: false, desc: 'Joki push rank dari Heroic ke Grandmaster. Win rate 90%+. KD aman.', stock: 20 },
+        { id: 34, game: 'cod', category: 'joki', name: 'Joki Rank Legendary → Master', price: 200000, originalPrice: 300000, img: 'https://picsum.photos/seed/cod-joki1/400/300', seller: 'JokiMasterID', sellerRating: 4.8, sold: 1230, fast: false, desc: 'Joki rank Legendary ke Master COD Mobile. Akun sendiri. 2-4 hari.', stock: 10 },
+        { id: 35, game: 'hsr', category: 'joki', name: 'Joki MoC Full Star 36', price: 100000, originalPrice: 150000, img: 'https://picsum.photos/seed/hsr-joki1/400/300', seller: 'JokiMasterID', sellerRating: 4.8, sold: 2100, fast: false, desc: 'Joki Memory of Chaos full star 36. Butuh setidaknya 8 karakter built baik.', stock: 30 },
+        { id: 36, game: 'ml', category: 'topup', name: 'Weekly Diamond Pass (7 Hari)', price: 28000, originalPrice: 35000, img: 'https://picsum.photos/seed/ml-weekly/400/300', seller: 'GameMart', sellerRating: 4.7, sold: 5670, fast: true, desc: 'Weekly Diamond Pass Mobile Legends. Bonus total 210 diamond selama 7 hari.', stock: 999 },
+    ];
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let cart = [];
+    let wishlist = [];
+    let currentFilters = {
+        game: 'all',
+        category: 'all',
+        search: '',
+        minPrice: 0,
+        maxPrice: 500000,
+        rating: 0,
+        fast: false,
+        sort: 'popular'
+    };
+
+    // ============================================================
+    // INISIALISASI
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', () => {
+        createParticles();
+        applyFilters();
+    });
+
+    // ============================================================
+    // PARTIKEL LATAR BELAKANG
+    // ============================================================
+    function createParticles() {
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = (30 + Math.random() * 70) + '%';
+            p.style.animationDelay = (Math.random() * 8) + 's';
+            p.style.animationDuration = (6 + Math.random() * 6) + 's';
+            container.appendChild(p);
+        }
+    }
+
+    // ============================================================
+    // FORMAT RUPIAH
+    // ============================================================
+    function formatRp(n) {
+        return 'Rp ' + n.toLocaleString('id-ID');
+    }
+
+    // ============================================================
+    // FORMAT ANGKA TERJUAL
+    // ============================================================
+    function formatSold(n) {
+        if (n >= 1000) return (n / 1000).toFixed(1).replace('.0', '') + 'rb';
+        return n.toString();
+    }
+
+    // ============================================================
+    // RENDER BINTANG RATING
+    // ============================================================
+    function renderStars(rating) {
+        let html = '';
+        for (let i = 1; i <= 5; i++) {
+            if (i <= Math.floor(rating)) html += '<i class="fas fa-star star-filled text-[10px]"></i>';
+            else if (i - 0.5 <= rating) html += '<i class="fas fa-star-half-alt star-filled text-[10px]"></i>';
+            else html += '<i class="far fa-star star-empty text-[10px]"></i>';
+        }
+        return html;
+    }
+
+    // ============================================================
+    // HITUNG DISKON
+    // ============================================================
+    function getDiscount(original, current) {
+        return Math.round(((original - current) / original) * 100);
+    }
+
+    // ============================================================
+    // FILTER & SORT
+    // ============================================================
+    function applyFilters() {
+        currentFilters.sort = document.getElementById('sortSelect').value;
+
+        let filtered = items.filter(item => {
+            if (currentFilters.game !== 'all' && item.game !== currentFilters.game) return false;
+            if (currentFilters.category !== 'all' && item.category !== currentFilters.category) return false;
+            if (item.price < currentFilters.minPrice || item.price > currentFilters.maxPrice) return false;
+            if (currentFilters.rating > 0 && item.sellerRating < currentFilters.rating) return false;
+            if (currentFilters.fast && !item.fast) return false;
+            if (currentFilters.search) {
+                const q = currentFilters.search.toLowerCase();
+                const match = item.name.toLowerCase().includes(q)
+                    || gameNames[item.game].toLowerCase().includes(q)
+                    || categoryNames[item.category].toLowerCase().includes(q)
+                    || item.seller.toLowerCase().includes(q);
+                if (!match) return false;
+            }
+            return true;
+        });
+
+        // Sorting
+        switch (currentFilters.sort) {
+            case 'price-low': filtered.sort((a, b) => a.price - b.price); break;
+            case 'price-high': filtered.sort((a, b) => b.price - a.price); break;
+            case 'rating': filtered.sort((a, b) => b.sellerRating - a.sellerRating); break;
+            case 'sold': filtered.sort((a, b) => b.sold - a.sold); break;
+            case 'newest': filtered.sort((a, b) => b.id - a.id); break;
+            default: filtered.sort((a, b) => b.sold - a.sold); break;
+        }
+
+        renderProducts(filtered);
+        renderActiveFilters();
+    }
+
+    function filterByGame(game) {
+        currentFilters.game = game;
+        document.querySelectorAll('.game-tab').forEach(tab => {
+            tab.classList.remove('tab-active');
+            tab.style.color = 'var(--text-secondary)';
+        });
+        const active = document.querySelector(`.game-tab[data-game="${game}"]`);
+        active.classList.add('tab-active');
+        active.style.color = '';
+        applyFilters();
+    }
+
+    function filterByCategory(cat) {
+        currentFilters.category = cat;
+        applyFilters();
+    }
+
+    function filterByRating(r) {
+        currentFilters.rating = r;
+        applyFilters();
+    }
+
+    function updatePriceFilter() {
+        const min = parseInt(document.getElementById('minPrice').value);
+        const max = parseInt(document.getElementById('maxPrice').value);
+        currentFilters.minPrice = Math.min(min, max);
+        currentFilters.maxPrice = Math.max(min, max);
+        document.getElementById('minPriceLabel').textContent = formatRp(currentFilters.minPrice);
+        document.getElementById('maxPriceLabel').textContent = formatRp(currentFilters.maxPrice);
+        applyFilters();
+    }
+
+    function handleSearch(val) {
+        currentFilters.search = val.trim();
+        applyFilters();
+    }
+
+    // Cek fast process
+    document.getElementById('fastProcess')?.addEventListener('change', function() {
+        currentFilters.fast = this.checked;
+        applyFilters();
+    });
+
+    function resetAll() {
+        currentFilters = { game: 'all', category: 'all', search: '', minPrice: 0, maxPrice: 500000, rating: 0, fast: false, sort: 'popular' };
+        document.getElementById('searchInput').value = '';
+        document.getElementById('minPrice').value = 0;
+        document.getElementById('maxPrice').value = 500000;
+        document.getElementById('minPriceLabel').textContent = 'Rp 0';
+        document.getElementById('maxPriceLabel').textContent = 'Rp 500.000';
+        document.getElementById('sortSelect').value = 'popular';
+        document.getElementById('fastProcess').checked = false;
+        document.querySelectorAll('.game-tab').forEach(tab => {
+            tab.classList.remove('tab-active');
+            tab.style.color = 'var(--text-secondary)';
+        });
+        const allTab = document.querySelector('.game-tab[data-game="all"]');
+        allTab.classList.add('tab-active');
+        allTab.style.color = '';
+        document.querySelectorAll('input[name="category"]')[0].checked = true;
+        document.querySelectorAll('input[name="rating"]')[0].checked = true;
+        applyFilters();
+    }
+
+    // ============================================================
+    // RENDER TAG FILTER AKTIF
+    // ============================================================
+    function renderActiveFilters() {
+        const container = document.getElementById('activeFilters');
+        const tags = [];
+        if (currentFilters.game !== 'all') tags.push({ label: gameNames[currentFilters.game], clear: () => filterByGame('all') });
+        if (currentFilters.category !== 'all') tags.push({ label: categoryNames[currentFilters.category], clear: () => { currentFilters.category = 'all'; document.querySelectorAll('input[name="category"]')[0].checked = true; applyFilters(); } });
+        if (currentFilters.search) tags.push({ label: `"${currentFilters.search}"`, clear: () => { currentFilters.search = ''; document.getElementById('searchInput').value = ''; applyFilters(); } });
+        if (currentFilters.minPrice > 0 || currentFilters.maxPrice < 500000) tags.push({ label: `${formatRp(currentFilters.minPrice)} - ${formatRp(currentFilters.maxPrice)}`, clear: () => { currentFilters.minPrice = 0; currentFilters.maxPrice = 500000; document.getElementById('minPrice').value = 0; document.getElementById('maxPrice').value = 500000; document.getElementById('minPriceLabel').textContent = 'Rp 0'; document.getElementById('maxPriceLabel').textContent = 'Rp 500.000'; applyFilters(); } });
+        if (currentFilters.rating > 0) tags.push({ label: `Rating ${currentFilters.rating}+`, clear: () => { currentFilters.rating = 0; document.querySelectorAll('input[name="rating"]')[0].checked = true; applyFilters(); } });
+        if (currentFilters.fast) tags.push({ label: 'Proses Instan', clear: () => { currentFilters.fast = false; document.getElementById('fastProcess').checked = false; applyFilters(); } });
+
+        if (tags.length === 0) { container.classList.add('hidden'); return; }
+        container.classList.remove('hidden');
+        container.innerHTML = tags.map((t, i) => `
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-500" style="background: var(--accent-glow); color: var(--accent);">
+                ${t.label}
+                <button onclick="clearFilterTag(${i})" class="hover:opacity-70"><i class="fas fa-times text-[10px]"></i></button>
+            </span>
+        `).join('');
+        // Simpan fungsi clear ke array global
+        window._filterClearFns = tags.map(t => t.clear);
+    }
+
+    function clearFilterTag(idx) {
+        if (window._filterClearFns && window._filterClearFns[idx]) window._filterClearFns[idx]();
+    }
+
+    // ============================================================
+    // RENDER PRODUK
+    // ============================================================
+    function renderProducts(list) {
+        const grid = document.getElementById('productGrid');
+        const empty = document.getElementById('emptyState');
+        document.getElementById('resultCount').textContent = list.length;
+
+        if (list.length === 0) {
+            grid.innerHTML = '';
+            empty.classList.remove('hidden');
+            return;
+        }
+        empty.classList.add('hidden');
+
+        grid.innerHTML = list.map((item, idx) => {
+            const discount = getDiscount(item.originalPrice, item.price);
+            const isWished = wishlist.includes(item.id);
+            return `
+            <div class="card-glow rounded-xl overflow-hidden cursor-pointer" style="background: var(--bg-card); border: 1px solid var(--border); animation-delay: ${idx * 40}ms;" onclick="openDetail(${item.id})">
+                <!-- Gambar -->
+                <div class="relative h-40 overflow-hidden">
+                    <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110" loading="lazy">
+                    <div class="absolute inset-0" style="background: linear-gradient(to top, var(--bg-card) 0%, transparent 60%);"></div>
+                    <!-- Badge game -->
+                    <span class="absolute top-2 left-2 game-${item.game} px-2 py-0.5 rounded text-[10px] font-600 text-white">${gameNames[item.game]}</span>
+                    <!-- Diskon -->
+                    ${discount > 0 ? `<span class="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-700" style="background: var(--red); color: white;">-${discount}%</span>` : ''}
+                    <!-- Wishlist -->
+                    <button onclick="event.stopPropagation(); toggleWishlistItem(${item.id})" class="absolute bottom-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-all" style="background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);">
+                        <i class="${isWished ? 'fas' : 'far'} fa-heart text-xs" style="color: ${isWished ? 'var(--red)' : 'white'};"></i>
+                    </button>
+                    <!-- Proses instan -->
+                    ${item.fast ? `<span class="absolute bottom-2 left-2 px-2 py-0.5 rounded text-[10px] font-600 flex items-center gap-1" style="background: rgba(0,230,138,0.2); color: var(--accent); backdrop-filter: blur(4px);"><i class="fas fa-bolt text-[8px]"></i> Instan</span>` : ''}
+                </div>
+                <!-- Info -->
+                <div class="p-3.5">
+                    <p class="text-[10px] font-500 mb-1" style="color: var(--accent);">${categoryNames[item.category]}</p>
+                    <h3 class="text-sm font-600 leading-snug mb-2 line-clamp-2" style="color: var(--text); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.name}</h3>
+                    <!-- Harga -->
+                    <div class="flex items-baseline gap-2 mb-2">
+                        <span class="font-display font-800 text-base" style="color: var(--accent);">${formatRp(item.price)}</span>
+                        ${discount > 0 ? `<span class="text-[10px] line-through" style="color: var(--text-muted);">${formatRp(item.originalPrice)}</span>` : ''}
+                    </div>
+                    <!-- Seller & terjual -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                            <div class="w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-700" style="background: var(--bg-elevated); color: var(--text-muted);">${item.seller.charAt(0)}</div>
+                            <span class="text-[11px]" style="color: var(--text-muted);">${item.seller}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="flex items-center gap-0.5 text-[11px]" style="color: var(--gold);">${renderStars(item.sellerRating)} <span style="color: var(--text-muted);">${item.sellerRating}</span></span>
+                            <span class="text-[11px]" style="color: var(--text-muted);">|</span>
+                            <span class="text-[11px]" style="color: var(--text-muted);">${formatSold(item.sold)} terjual</span>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ============================================================
+    // DETAIL ITEM
+    // ============================================================
+    function openDetail(id) {
+        const item = items.find(i => i.id === id);
+        if (!item) return;
+
+        const discount = getDiscount(item.originalPrice, item.price);
+        const isWished = wishlist.includes(item.id);
+        const inCart = cart.find(c => c.id === id);
+
+        document.getElementById('detailContent').innerHTML = `
+            <div class="flex flex-col md:flex-row">
+                <!-- Gambar -->
+                <div class="md:w-2/5 h-56 md:h-auto relative">
+                    <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 md:hidden" style="background: linear-gradient(to top, var(--bg-main) 5%, transparent 50%);"></div>
+                    ${discount > 0 ? `<span class="absolute top-4 left-4 px-3 py-1 rounded-lg text-sm font-700" style="background: var(--red); color: white;">-${discount}%</span>` : ''}
+                </div>
+                <!-- Info -->
+                <div class="md:w-3/5 p-5 md:p-6 flex flex-col">
+                    <button onclick="closeDetail()" class="absolute top-3 right-3 w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--bg-card)] md:static md:self-end md:mb-2">
+                        <i class="fas fa-times" style="color: var(--text-secondary);"></i>
+                    </button>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="game-${item.game} px-2.5 py-0.5 rounded text-[11px] font-600 text-white">${gameNames[item.game]}</span>
+                        <span class="px-2.5 py-0.5 rounded text-[11px] font-600" style="background: var(--accent-glow); color: var(--accent);">${categoryNames[item.category]}</span>
+                        ${item.fast ? `<span class="px-2.5 py-0.5 rounded text-[11px] font-600 flex items-center gap-1" style="background: var(--accent-glow); color: var(--accent);"><i class="fas fa-bolt text-[9px]"></i> Instan</span>` : ''}
+                    </div>
+                    <h2 class="font-display font-800 text-xl md:text-2xl mb-3" style="color: var(--text);">${item.name}</h2>
+                    <div class="flex items-baseline gap-3 mb-4">
+                        <span class="font-display font-900 text-2xl" style="color: var(--accent);">${formatRp(item.price)}</span>
+                        ${discount > 0 ? `<span class="text-sm line-through" style="color: var(--text-muted);">${formatRp(item.originalPrice)}</span>` : ''}
+                    </div>
+                    <p class="text-sm leading-relaxed mb-4" style="color: var(--text-secondary);">${item.desc}</p>
+                    <!-- Seller info -->
+                    <div class="p-3 rounded-xl mb-4 flex items-center gap-3" style="background: var(--bg-card); border: 1px solid var(--border);">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center font-display font-700 text-sm" style="background: var(--bg-elevated); color: var(--text);">${item.seller.charAt(0)}</div>
+                        <div class="flex-1">
+                            <p class="text-sm font-600" style="color: var(--text);">${item.seller}</p>
+                            <div class="flex items-center gap-2 text-xs" style="color: var(--text-muted);">
+                                <span class="flex items-center gap-0.5" style="color: var(--gold);">${renderStars(item.sellerRating)}</span>
+                                <span>${item.sellerRating}</span>
+                                <span>|</span>
+                                <span>${formatSold(item.sold)} terjual</span>
+                            </div>
+                        </div>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-600" style="background: var(--accent-glow); color: var(--accent);">Verified</span>
+                    </div>
+                    <!-- Stock -->
+                    <p class="text-xs mb-4" style="color: var(--text-muted);"><i class="fas fa-box mr-1"></i> Stok tersedia: <span class="font-600" style="color: ${item.stock > 10 ? 'var(--accent)' : 'var(--red)'};">${item.stock}</span></p>
+                    <!-- Actions -->
+                    <div class="mt-auto flex gap-3">
+                        <button onclick="event.stopPropagation(); toggleWishlistItem(${item.id}); openDetail(${item.id});" class="h-11 w-11 rounded-xl flex items-center justify-center border shrink-0" style="border-color: var(--border); background: transparent;">
+                            <i class="${isWished ? 'fas' : 'far'} fa-heart" style="color: ${isWished ? 'var(--red)' : 'var(--text-secondary)'};"></i>
+                        </button>
+                        <button onclick="event.stopPropagation(); addToCart(${item.id})" class="flex-1 h-11 rounded-xl font-700 text-sm flex items-center justify-center gap-2 border" style="border-color: var(--accent); color: var(--accent); background: transparent;">
+                            <i class="fas fa-cart-plus"></i> ${inCart ? 'Sudah di Keranjang' : 'Tambah ke Keranjang'}
+                        </button>
+                        <button onclick="event.stopPropagation(); buyNow(${item.id})" class="flex-1 h-11 rounded-xl font-700 text-sm flex items-center justify-center gap-2" style="background: var(--accent); color: var(--bg-deep);">
+                            <i class="fas fa-bolt"></i> Beli Langsung
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.getElementById('detailModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetail() {
+        document.getElementById('detailModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // ============================================================
+    // WISHLIST
+    // ============================================================
+    function toggleWishlistItem(id) {
+        const idx = wishlist.indexOf(id);
+        if (idx > -1) { wishlist.splice(idx, 1); showToast('Dihapus dari wishlist', 'info'); }
+        else { wishlist.push(id); showToast('Ditambahkan ke wishlist', 'success'); }
+        updateWishlistCount();
+        applyFilters();
+    }
+
+    function updateWishlistCount() {
+        const el = document.getElementById('wishlistCount');
+        if (wishlist.length > 0) { el.textContent = wishlist.length; el.classList.remove('hidden'); }
+        else el.classList.add('hidden');
+    }
+
+    function toggleWishlist() {
+        if (wishlist.length === 0) { showToast('Wishlist kosong', 'info'); return; }
+        currentFilters.game = 'all';
+        currentFilters.category = 'all';
+        // Filter hanya wishlist
+        const wishItems = items.filter(i => wishlist.includes(i.id));
+        renderProducts(wishItems);
+        document.getElementById('resultCount').textContent = wishItems.length + ' (Wishlist)';
+        showToast(`Menampilkan ${wishItems.length} item wishlist`, 'info');
+        document.getElementById('listingSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ============================================================
+    // KERANJANG
+    // ============================================================
+    function addToCart(id) {
+        const existing = cart.find(c => c.id === id);
+        if (existing) { showToast('Item sudah ada di keranjang', 'info'); return; }
+        const item = items.find(i => i.id === id);
+        if (!item) return;
+        cart.push({ ...item, qty: 1 });
+        updateCartUI();
+        showToast(`${item.name} ditambahkan ke keranjang`, 'success');
+    }
+
+    function removeFromCart(id) {
+        cart = cart.filter(c => c.id !== id);
+        updateCartUI();
+        renderCartItems();
+        showToast('Item dihapus dari keranjang', 'info');
+    }
+
+    function updateCartQty(id, delta) {
+        const item = cart.find(c => c.id === id);
+        if (!item) return;
+        item.qty = Math.max(1, Math.min(item.stock, item.qty + delta));
+        updateCartUI();
+        renderCartItems();
+    }
+
+    function updateCartUI() {
+        const count = cart.reduce((s, c) => s + c.qty, 0);
+        const el = document.getElementById('cartCount');
+        if (count > 0) { el.textContent = count; el.classList.remove('hidden'); }
+        else el.classList.add('hidden');
+        document.getElementById('cartItemCount').textContent = count;
+
+        const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+        const fee = Math.round(subtotal * 0.02);
+        document.getElementById('cartSubtotal').textContent = formatRp(subtotal);
+        document.getElementById('cartFee').textContent = formatRp(fee);
+        document.getElementById('cartTotal').textContent = formatRp(subtotal + fee);
+
+        document.getElementById('cartEmpty').classList.toggle('hidden', cart.length > 0);
+        document.getElementById('cartItems').classList.toggle('hidden', cart.length === 0);
+        document.getElementById('cartFooter').classList.toggle('hidden', cart.length === 0);
+    }
+
+    function renderCartItems() {
+        const container = document.getElementById('cartItems');
+        container.innerHTML = cart.map(item => `
+            <div class="flex gap-3 p-3 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border);">
+                <img src="${item.img}" alt="${item.name}" class="w-16 h-16 rounded-lg object-cover shrink-0">
+                <div class="flex-1 min-w-0">
+                    <h4 class="text-xs font-600 leading-snug mb-1 truncate" style="color: var(--text);">${item.name}</h4>
+                    <p class="text-xs mb-2" style="color: var(--text-muted);">${item.seller}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="font-display font-700 text-sm" style="color: var(--accent);">${formatRp(item.price)}</span>
+                        <div class="flex items-center gap-1">
+                            <button onclick="updateCartQty(${item.id}, -1)" class="qty-btn w-6 h-6 rounded flex items-center justify-center text-xs border" style="border-color: var(--border); color: var(--text-secondary);">-</button>
+                            <span class="w-7 text-center text-xs font-600" style="color: var(--text);">${item.qty}</span>
+                            <button onclick="updateCartQty(${item.id}, 1)" class="qty-btn w-6 h-6 rounded flex items-center justify-center text-xs border" style="border-color: var(--border); color: var(--text-secondary);">+</button>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="removeFromCart(${item.id})" class="self-start w-6 h-6 rounded flex items-center justify-center hover:bg-[var(--red-dim)]">
+                    <i class="fas fa-trash-alt text-[10px]" style="color: var(--text-muted);"></i>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    function toggleCart() {
+        const overlay = document.getElementById('cartOverlay');
+        const isOpen = !overlay.classList.contains('hidden');
+        if (isOpen) {
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+        } else {
+            renderCartItems();
+            overlay.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    // ============================================================
+    // BELI LANGSUNG
+    // ============================================================
+    function buyNow(id) {
+        addToCart(id);
+        closeDetail();
+        toggleCart();
+    }
+
+    // ============================================================
+    // CHECKOUT
+    // ============================================================
+    function checkout() {
+        if (cart.length === 0) return;
+        const subtotal = cart.reduce((s, c) => s + c.price * c.qty, 0);
+        const fee = Math.round(subtotal * 0.02);
+        const total = subtotal + fee;
+
+        document.getElementById('checkoutContent').innerHTML = `
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="font-display font-800 text-xl" style="color: var(--text);">Checkout</h2>
+                    <button onclick="closeCheckout()" class="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-[var(--bg-card)]">
+                        <i class="fas fa-times" style="color: var(--text-secondary);"></i>
+                    </button>
+                </div>
+
+                <!-- Metode Pembayaran -->
+                <div class="mb-5">
+                    <h3 class="text-sm font-700 mb-3" style="color: var(--text);">Metode Pembayaran</h3>
+                    <div class="space-y-2" id="paymentMethods">
+                        <label class="flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all" style="background: var(--bg-card); border-color: var(--accent);" onclick="selectPayment(this, 'saldo')">
+                            <input type="radio" name="payment" value="saldo" checked class="hidden">
+                            <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: var(--accent-glow);"><i class="fas fa-wallet" style="color: var(--accent);"></i></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-600" style="color: var(--text);">Saldo GameVault</p>
+                                <p class="text-xs" style="color: var(--text-muted);">Saldo: Rp 5.000.000</p>
+                            </div>
+                            <div class="w-4 h-4 rounded-full border-2 flex items-center justify-center" style="border-color: var(--accent);"><div class="w-2 h-2 rounded-full" style="background: var(--accent);"></div></div>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all" style="background: var(--bg-card); border-color: var(--border);" onclick="selectPayment(this, 'qris')">
+                            <input type="radio" name="payment" value="qris" class="hidden">
+                            <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: var(--bg-elevated);"><i class="fas fa-qrcode" style="color: var(--text-secondary);"></i></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-600" style="color: var(--text);">QRIS</p>
+                                <p class="text-xs" style="color: var(--text-muted);">GoPay, OVO, DANA, ShopeePay</p>
+                            </div>
+                            <div class="w-4 h-4 rounded-full border-2" style="border-color: var(--border);"></div>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all" style="background: var(--bg-card); border-color: var(--border);" onclick="selectPayment(this, 'bank')">
+                            <input type="radio" name="payment" value="bank" class="hidden">
+                            <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: var(--bg-elevated);"><i class="fas fa-university" style="color: var(--text-secondary);"></i></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-600" style="color: var(--text);">Transfer Bank</p>
+                                <p class="text-xs" style="color: var(--text-muted);">BCA, BNI, BRI, Mandiri</p>
+                            </div>
+                            <div class="w-4 h-4 rounded-full border-2" style="border-color: var(--border);"></div>
+                        </label>
+                        <label class="flex items-center gap-3 p-3 rounded-xl cursor-pointer border transition-all" style="background: var(--bg-card); border-color: var(--border);" onclick="selectPayment(this, 'ewallet')">
+                            <input type="radio" name="payment" value="ewallet" class="hidden">
+                            <div class="w-9 h-9 rounded-lg flex items-center justify-center" style="background: var(--bg-elevated);"><i class="fas fa-mobile-alt" style="color: var(--text-secondary);"></i></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-600" style="color: var(--text);">E-Wallet</p>
+                                <p class="text-xs" style="color: var(--text-muted);">GoPay, OVO, DANA, ShopeePay</p>
+                            </div>
+                            <div class="w-4 h-4 rounded-full border-2" style="border-color: var(--border);"></div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Ringkasan -->
+                <div class="p-4 rounded-xl mb-5" style="background: var(--bg-card); border: 1px solid var(--border);">
+                    <h3 class="text-sm font-700 mb-3" style="color: var(--text);">Ringkasan Pesanan</h3>
+                    ${cart.map(item => `
+                        <div class="flex items-center justify-between py-1.5">
+                            <span class="text-xs truncate flex-1 mr-2" style="color: var(--text-secondary);">${item.name} x${item.qty}</span>
+                            <span class="text-xs font-600 shrink-0" style="color: var(--text);">${formatRp(item.price * item.qty)}</span>
+                        </div>
+                    `).join('')}
+                    <div class="glow-line my-2"></div>
+                    <div class="flex items-center justify-between py-1">
+                        <span class="text-xs" style="color: var(--text-muted);">Biaya Layanan</span>
+                        <span class="text-xs" style="color: var(--text-muted);">${formatRp(fee)}</span>
+                    </div>
+                    <div class="flex items-center justify-between pt-2">
+                        <span class="font-700" style="color: var(--text);">Total Pembayaran</span>
+                        <span class="font-display font-900 text-lg" style="color: var(--accent);">${formatRp(total)}</span>
+                    </div>
+                </div>
+
+                <!-- Catatan -->
+                <div class="mb-5">
+                    <label class="text-sm font-600 mb-2 block" style="color: var(--text);">Catatan (opsional)</label>
+                    <textarea id="checkoutNote" rows="2" placeholder="Contoh: ID server 1234, nomor WhatsApp aktif..." class="w-full p-3 rounded-xl text-sm outline-none border resize-none" style="background: var(--bg-card); border-color: var(--border); color: var(--text);"></textarea>
+                </div>
+
+                <button onclick="processCheckout(${total})" class="w-full h-12 rounded-xl font-700 text-sm flex items-center justify-center gap-2" style="background: var(--accent); color: var(--bg-deep);">
+                    <i class="fas fa-shield-alt"></i> Bayar ${formatRp(total)}
+                </button>
+                <p class="text-[10px] text-center mt-3" style="color: var(--text-muted);">Dengan melanjutkan, Anda menyetujui Syarat & Ketentuan GameVault</p>
+            </div>
+        `;
+        toggleCart();
+        document.getElementById('checkoutModal').classList.remove('hidden');
+    }
+
+    let selectedPayment = 'saldo';
+
+    function selectPayment(el, method) {
+        selectedPayment = method;
+        document.querySelectorAll('#paymentMethods label').forEach(l => {
+            l.style.borderColor = 'var(--border)';
+            const radio = l.querySelector('.w-4.h-4');
+            radio.style.borderColor = 'var(--border)';
+            radio.innerHTML = '';
+        });
+        el.style.borderColor = 'var(--accent)';
+        const radio = el.querySelector('.w-4.h-4');
+        radio.style.borderColor = 'var(--accent)';
+        radio.innerHTML = '<div class="w-2 h-2 rounded-full" style="background: var(--accent);"></div>';
+    }
+
+    function processCheckout(total) {
+        const note = document.getElementById('checkoutNote')?.value || '';
+        document.getElementById('checkoutContent').innerHTML = `
+            <div class="p-8 text-center">
+                <div class="w-20 h-20 rounded-full mx-auto mb-5 flex items-center justify-center" style="background: var(--accent-glow); animation: fadeScale 0.5s ease;">
+                    <i class="fas fa-check-circle text-4xl" style="color: var(--accent);"></i>
+                </div>
+                <h2 class="font-display font-800 text-xl mb-2" style="color: var(--text);">Pesanan Berhasil Dibuat!</h2>
+                <p class="text-sm mb-1" style="color: var(--text-secondary);">Order ID: <span class="font-600" style="color: var(--text);">GV-${Date.now().toString().slice(-8)}</span></p>
+                <p class="text-sm mb-5" style="color: var(--text-secondary);">Total: <span class="font-600" style="color: var(--accent);">${formatRp(total)}</span></p>
+                ${selectedPayment !== 'saldo' ? `
+                <div class="p-4 rounded-xl mb-5" style="background: var(--bg-card); border: 1px solid var(--border);">
+                    <p class="text-xs font-600 mb-2" style="color: var(--text);">Silakan scan QR code untuk pembayaran</p>
+                    <div class="w-40 h-40 mx-auto rounded-lg flex items-center justify-center mb-2" style="background: white;">
+                        <i class="fas fa-qrcode text-6xl" style="color: #333;"></i>
+                    </div>
+                    <p class="text-[10px]" style="color: var(--text-muted);">Batas waktu pembayaran: 15 menit</p>
+                </div>
+                ` : `
+                <div class="p-4 rounded-xl mb-5" style="background: var(--accent-glow); border: 1px solid rgba(0,230,138,0.2);">
+                    <p class="text-xs" style="color: var(--accent);"><i class="fas fa-check mr-1"></i> Pembayaran otomatis dipotong dari saldo GameVault</p>
+                </div>
+                `}
+                <p class="text-xs mb-5" style="color: var(--text-muted);">Item akan diproses otomatis. Cek halaman pesanan untuk melihat status.</p>
+                <button onclick="finishCheckout()" class="h-11 px-8 rounded-xl font-700 text-sm" style="background: var(--accent); color: var(--bg-deep);">Kembali Belanja</button>
+            </div>
+        `;
+    }
+
+    function finishCheckout() {
+        cart = [];
+        updateCartUI();
+        closeCheckout();
+        showToast('Pesanan berhasil! Terima kasih telah berbelanja.', 'success');
+    }
+
+    function closeCheckout() {
+        document.getElementById('checkoutModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    // ============================================================
+    // MOBILE FILTER
+    // ============================================================
+    function toggleMobileFilter() {
+        const overlay = document.getElementById('mobileFilterOverlay');
+        if (!overlay.classList.contains('hidden')) {
+            overlay.classList.add('hidden');
+            document.body.style.overflow = '';
+            return;
+        }
+        // Clone filter content
+        const content = document.getElementById('mobileFilterContent');
+        content.innerHTML = `
+            <div>
+                <h4 class="text-sm font-700 mb-3" style="color: var(--text);">Kategori Item</h4>
+                <div class="space-y-2">
+                    ${['all','topup','skin','akun','joki','bundle'].map(c => `
+                        <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                            <input type="radio" name="mcategory" value="${c}" ${currentFilters.category === c ? 'checked' : ''} onchange="currentFilters.category='${c}'; applyFilters();" class="accent-[#00e68a]"> ${c === 'all' ? 'Semua' : categoryNames[c]}
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+            <div>
+                <h4 class="text-sm font-700 mb-3" style="color: var(--text);">Rentang Harga</h4>
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-xs" style="color: var(--text-muted);">Min: ${formatRp(currentFilters.minPrice)}</label>
+                        <input type="range" min="0" max="500000" step="10000" value="${currentFilters.minPrice}" oninput="currentFilters.minPrice=parseInt(this.value); updatePriceFilter();">
+                    </div>
+                    <div>
+                        <label class="text-xs" style="color: var(--text-muted);">Max: ${formatRp(currentFilters.maxPrice)}</label>
+                        <input type="range" min="0" max="500000" step="10000" value="${currentFilters.maxPrice}" oninput="currentFilters.maxPrice=parseInt(this.value); updatePriceFilter();">
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-sm font-700 mb-3" style="color: var(--text);">Rating Seller</h4>
+                <div class="space-y-2">
+                    ${[[0,'Semua Rating'],[4.5,'4.5+'],[4,'4.0+'],[3.5,'3.5+']].map(([v,l]) => `
+                        <label class="flex items-center gap-2 cursor-pointer text-sm" style="color: var(--text-secondary);">
+                            <input type="radio" name="mrating" value="${v}" ${currentFilters.rating === v ? 'checked' : ''} onchange="currentFilters.rating=${v}; applyFilters();" class="accent-[#00e68a]"> ${l}
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+            <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" ${currentFilters.fast ? 'checked' : ''} onchange="currentFilters.fast=this.checked; applyFilters();" class="accent-[#00e68a] w-4 h-4">
+                <div>
+                    <span class="text-sm font-600" style="color: var(--text);">Proses Instan</span>
+                    <p class="text-xs" style="color: var(--text-muted);">Selesai dalam 5 menit</p>
+                </div>
+            </label>
+        `;
+        overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    // ============================================================
+    // TOAST NOTIFIKASI
+    // ============================================================
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        const icons = { success: 'fa-check-circle', error: 'fa-times-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+        const colors = { success: 'var(--accent)', error: 'var(--red)', info: '#60a5fa', warning: 'var(--gold)' };
+        toast.className = 'toast-enter pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl max-w-sm';
+        toast.style.cssText = `background: var(--bg-elevated); border: 1px solid var(--border-light);`;
+        toast.innerHTML = `
+            <i class="fas ${icons[type]} text-sm" style="color: ${colors[type]};"></i>
+            <span class="text-sm font-500" style="color: var(--text);">${message}</span>
+        `;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.remove('toast-enter');
+            toast.classList.add('toast-exit');
+            setTimeout(() => toast.remove(), 300);
+        }, 2800);
+    }
+
+    // ============================================================
+    // UTILITAS
+    // ============================================================
+    function scrollToListing() {
+        document.getElementById('listingSection').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function toggleUserMenu() {
+        showToast('Menu pengguna segera hadir!', 'info');
+    }
+
+    // Keyboard: ESC menutup modal
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (!document.getElementById('checkoutModal').classList.contains('hidden')) closeCheckout();
+            else if (!document.getElementById('detailModal').classList.contains('hidden')) closeDetail();
+            else if (!document.getElementById('cartOverlay').classList.contains('hidden')) toggleCart();
+            else if (!document.getElementById('mobileFilterOverlay').classList.contains('hidden')) toggleMobileFilter();
+        }
+    });
+    </script>
+</body>
+</html>
